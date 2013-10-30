@@ -1,0 +1,74 @@
+@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+
+body {
+  font-family: 'Yanone Kaffeesatz';
+}
+
+h1,h2, h3 {
+  font-weight: 400;
+  margin-bottom: 0;
+  margin-top: 10px;
+}
+
+h1 {
+  font-size: 5em;
+}
+
+h2 {
+  font-size: 4em;
+}
+
+h3 {
+  font-size: 3em;
+}
+
+li {
+  font-size: 3em;
+}
+
+.remark-slide div {
+  background: #272822;
+  color: #f3f3f3;
+  text-shadow: 0 0 20px #333;
+}
+
+.remark-slide h1 {
+  color: yellow;
+  line-height: 0.8em;
+}
+
+pre {
+  border-left: 0.4em solid #d7d7d7;
+  padding: 1em !important;
+}
+
+code {
+  font-size: 1.3em;
+  color: green !important;
+  background: #272822 !important;
+}
+
+a {
+  color: #F92672;
+  text-decoration: none;
+}
+
+.task {
+  float: right;
+  font-size: 0.9em;
+  padding-top: 0.6em;
+}
+
+.task a {
+  color: #080;
+  text-decoration: none;
+}
+
+.right {
+  float: right;
+  margin-left: 1em;
+}
+
+.pushdown {
+  margin-top: 12em;
+}

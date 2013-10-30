@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Write UI Tests with Marionette</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+  <pre id="source">
+
+class: center, middle
+
+# Write UI Tests with Marionette
+
+## [:evanxd](http://github.com/evanxd)
+
+---
+
+class: center, middle
+
+# Test is the Protector
+![Protector](images/protector.jpg)
+
+---
+
+# Agenda
+
+## Introduce Marionette
+
+## Use Marionette
+* Run/Write a test
+* Good Practice
+* Useful APIs and Plugins
+
+## Most happening problems
+* How to debug
+
+---
+
+class: center, middle
+
+# Marionette
+
+### Remotely drive UI of a program run on the Gecko.
+
+![Firefox Marionette](images/firefox-marionette.jpg)
+
+---
+
+class: center, middle
+
+# Marionette Architecture
+
+![Marionette Architecture](images/marionette-girl.png)
+
+---
+
+class: center, middle
+
+# Marionette Architecture
+
+![Marionette Architecture](images/marionette-architecture.png)
+
+---
+
+# Platforms
+
+## Server
+* Firefox OS (Dev)
+* Firefox Desktop (Nightly)
+
+## Client
+* JavaScript Client (Aug, 2013)
+* Python Client (?)
+
+## Issue
+* JavaScript vs Python
+
+---
+
+# Run tests
+
+```sh
+// You need node.js >= 0.8 to
+// install Marionette modules.
+npm install
+
+// Run a specificed test.
+/bin/gaia-marionette /path/to/test_file.js
+
+// Run all tests.
+make test-integraion
+```
+
+---
+
+# Write a test
+
+``` javascripot
+marionette('launch calendar', function() {
+  const CALENDAR_APP_URL = 'app://calendar.gaiamobile.org';
+  var client = marionette.client();
+
+  setup(function() {
+    client.apps.launch(CALENDAR_APP_URL);
+    client.apps.switchToApp(CALENDAR_APP_URL);
+  });
+
+  test('should make calendar active', function() {
+    var url = this.client.getUrl();
+    assert.ok(url.indexOf(CALENDAR_APP_URL) !== -1);
+  });
+});
+```
+
+---
+
+# Pattern of writing a test
+
+```javascript
+// Launch a app.
+
+// Do operations.
+// Wait for page ready.
+
+// Repeat the doing and waiting.
+
+// Make sure app works well.
+```
+
+---
+
+# Good Pratice
+
+## Do
+* Do testing in sync mode
+* Test a feature in a script file
+* Helper of reusable UI operations
+
+## Do not
+* Do NOT use *setTimeout()*, *helper.wait()*
+* Do NOT click (x, y) on screen for click a element
+* Do NOT access external network, because of TPBL
+
+---
+
+# Useful APIs (1/4)
+
+## [Client](http://mozilla-b2g.github.io/marionette-js-client/api-docs/classes/Marionette.Client.html)
+* findElement(cssSelector)
+* executeScript(script)
+* waitFor(function)
+* switchToFrame(frameElement)
+
+---
+
+# Useful APIs (2/4)
+
+## [Element](http://mozilla-b2g.github.io/marionette-js-client/api-docs/classes/Marionette.Element.html)
+* tap()
+* sendKeys(string)
+* text()
+
+---
+
+# Useful APIs (3/4)
+
+## [Actions](http://mozilla-b2g.github.io/marionette-js-client/api-docs/classes/Marionette.Actions.html)
+* press(element), release()
+* moveByOffset(x, y), wait(time)
+* doubleTap(element), longPress(element, time)
+* flick(element, x1, y1, x2, y2, time)
+
+```javascript
+actions.
+  press(bodyElement, 100, 100).
+  moveByOffset(0, 10).
+  wait(0.05).
+  release().
+  wait(0.05).
+  flick(bodyElement, 0, 0, 0, 200).
+  perform();
+```
+
+---
+
+# Useful APIs (4/4)
+
+## [MultiActions](http://mozilla-b2g.github.io/marionette-js-client/api-docs/classes/Marionette.Actions.html)
+* For multifinger gesture
+* One action is for one finger
+
+## More APIs
+* [online doc](http://mozilla-b2g.github.io/marionette-js-client/api-docs/)
+* local doc
+
+```sh
+make doc-server
+```
+
+---
+
+# Useful Plugins
+
+## [marionette-helper](https://github.com/mozilla-b2g/marionette-helper)
+* waitForElement()
+
+## [marionette-content-script](https://github.com/mozilla-b2g/marionette-content-script)
+* mock WebAPIs
+
+## [marionette-settings-api](https://github.com/mozilla-b2g/marionette-settings-api)
+* getter and setter of mozSettings
+
+---
+
+# Most Happening Problems
+
+## Cannot get a element
+* Wrong css selector
+* Cross App
+
+## Cannot click a element
+* Get wrong element
+* Click the element at wrong timing
+* Marionette has bugs
+
+---
+
+# Cross App
+
+## App frames in Gaia
+```
+&ltsystem-frame&gt
+  &ltemail-frame&gt
+  &ltcalendar-frame&gt
+  ...
+&lt/system-frame&gt
+```
+
+## Go to Email App from Calendar App
+```javascript
+// Go to Calendar App.
+client.apps.launch(CALENDAR_APP_URL);
+client.apps.switchToApp(CALENDAR_APP_URL);
+// Go to System App.
+client.switchToFrame();
+// Go to Email App.
+client.apps.launch(EMAIL_APP_URL);
+client.apps.switchToApp(EMAIL_APP_URL);
+```
+
+---
+
+# How to Debug
+
+## [marionette-marker](http://github.com/evanxd/marionette-marker)
+* setupCursor()
+* [demo](https://bug932680.bugzilla.mozilla.org/attachment.cgi?id=824500)
+
+## [marionette-debug](http://github.com/mozilla-b2g/marionette-debug)
+* screenshot()
+
+## [marionette-helper](http://github.com/mozilla-b2g/marionette-helper)
+* wait()
+
+---
+
+# New Things
+
+## On going works
+* CalDAV server
+* Screenshot comparison tool: [gaia-screenshot](https://github.com/LeeChSien/gaia-screenshot)
+* Mark elements and touch events: [marionette-marker](https://github.com/evanxd/marionette-marker)
+
+## Future works
+* Test coverage
+* Monkey test
+
+---
+
+class: center, middle
+
+# File a bug after you write a UI test.
+![I have a dream](images/i-have-a-dream.jpg)
+
+---
+
+class: center, middle
+
+# One more thing
+
+---
+
+class: center, middle
+
+# [Marionette Follower](http://badg.us/en-US/badges/badge/Marionette-Follower)
+
+## You got a badge!
+
+![Marionette starter badge](images/marionette-follower-badge.png)
+
+---
+
+class: center, middle
+
+# [Marionette Starter](http://badg.us/en-US/badges/badge/Marionette-Starter)
+
+## First guy wrote a test for a App
+
+![Marionette starter badge](images/marionette-starter-badge.png)
+
+---
+
+class: center, middle
+
+# Get the Badges
+
+## [http://badg.us](http://badg.us) ➔ Claim award from code
+
+---
+
+class: center, middle
+
+# Special Thanks
+
+## Vit Lai, Yuren
+![Vit](images/vit.png)
+![Yuren](images/yuren.png)
+
+---
+
+class: center, middle
+
+# Q&A
+
+
+  </pre>
+  <script src="http://gnab.github.io/remark/downloads/remark-0.5.7.min.js"></script>
+  <script type="text/javascript">
+    var slideshow = remark.create();
+  </script>
+</body>
+</html>
