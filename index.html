@@ -98,21 +98,27 @@ make test-integraion
 
 # Write a test
 
-``` javascripot
+``` javascript
+'use strict'
+
+var assert = require('chai').assert;
+
 marionette('launch calendar', function() {
-  const CALENDAR_APP_URL = 'app://calendar.gaiamobile.org';
-  var client = marionette.client();
+  var calendarAppUrl = 'app://calendar.gaiamobile.org',
+      client = marionette.client();
 
   setup(function() {
-    client.apps.launch(CALENDAR_APP_URL);
-    client.apps.switchToApp(CALENDAR_APP_URL);
+    client.apps.launch(calendarAppUrl);
+    client.apps.switchToApp(calendarAppUrl);
+    client.helper.wait(3000);
   });
 
   test('should make calendar active', function() {
-    var url = this.client.getUrl();
-    assert.ok(url.indexOf(CALENDAR_APP_URL) !== -1);
+    var url = client.getUrl();
+    assert.ok(url.indexOf(calendarAppUrl) !== -1);
   });
 });
+
 ```
 
 ---
